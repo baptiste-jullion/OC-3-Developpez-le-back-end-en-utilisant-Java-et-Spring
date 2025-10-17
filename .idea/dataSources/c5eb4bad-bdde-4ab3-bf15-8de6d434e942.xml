@@ -929,7 +929,7 @@ chatop_db|schema||chatop_db||UPDATE|G</Grants>
       <AutoIntrospectionLevel>3</AutoIntrospectionLevel>
       <Current>1</Current>
       <LastIntrospectionLevel>3</LastIntrospectionLevel>
-      <LastIntrospectionLocalTimestamp>2025-10-03.13:20:47</LastIntrospectionLocalTimestamp>
+      <LastIntrospectionLocalTimestamp>2025-10-17.07:57:12</LastIntrospectionLocalTimestamp>
       <CollationName>utf8mb4_unicode_ci</CollationName>
     </schema>
     <schema id="289" parent="1" name="information_schema">
