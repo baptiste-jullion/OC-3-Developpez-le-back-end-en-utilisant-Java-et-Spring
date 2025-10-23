@@ -10,21 +10,32 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "USERS")
-public class User {
+@Table(name = "RENTALS")
+public class Rental {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email", unique = true)
-    private String email;
-
     @Column(name = "name")
     private String name;
 
-    @Column(name = "password")
-    private String password;
+    @Column(name = "surface")
+    private Double surface;
+
+    @Column(name = "price")
+    private Double price;
+
+    @Column(name = "picture")
+    private String picture;
+
+    @Column(name = "description", length = 2000)
+    private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -34,9 +45,6 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "owner")
-    private List<Rental> rentals;
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "rental")
     private List<Message> messages;
 }

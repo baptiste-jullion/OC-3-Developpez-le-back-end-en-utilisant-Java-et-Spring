@@ -6,25 +6,27 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @Entity
-@Table(name = "USERS")
-public class User {
+@Table(name = "MESSAGES")
+public class Message {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "email", unique = true)
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "rental_id")
+    private Rental rental;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "message", length = 2000)
+    private String message;
 
-    @Column(name = "password")
-    private String password;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -34,9 +36,4 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "owner")
-    private List<Rental> rentals;
-
-    @OneToMany(mappedBy = "user")
-    private List<Message> messages;
 }
