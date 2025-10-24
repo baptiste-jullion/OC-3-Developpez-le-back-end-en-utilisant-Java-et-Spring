@@ -38,9 +38,11 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<Rental> rentals;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Message> messages;
 }
