@@ -1,7 +1,9 @@
 package com.chatop.api.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -23,6 +25,8 @@ public class User {
     @Column(name = "name")
     private String name;
 
+    @JsonIgnore
+    @ToString.Exclude
     @Column(name = "password")
     private String password;
 
