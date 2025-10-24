@@ -18,7 +18,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/test", "/api/test/db", "/api/auth/**").permitAll()
+                        .requestMatchers("/api/healthcheck", "/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
@@ -28,4 +28,5 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 }
