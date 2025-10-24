@@ -8,7 +8,7 @@ public class HealthcheckController {
 
     @GetMapping("/api/healthcheck")
     public String healthcheck() {
-        return "API is up!";
+        return "API is up and running !";
     }
 
 }
