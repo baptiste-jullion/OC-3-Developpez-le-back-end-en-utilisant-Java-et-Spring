@@ -1,6 +1,5 @@
 package com.chatop.api.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.ToString;
@@ -25,7 +24,6 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @JsonIgnore
     @ToString.Exclude
     @Column(name = "password")
     private String password;
@@ -38,11 +36,9 @@ public class User {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "owner")
     private List<Rental> rentals;
 
-    @JsonIgnore
     @OneToMany(mappedBy = "user")
     private List<Message> messages;
 }
