@@ -8,9 +8,6 @@ import lombok.Setter;
 public class AuthSuccessDto {
     private String token;
 
-    public AuthSuccessDto() {
-    }
-
     public AuthSuccessDto(String token) {
         this.token = token;
     }
