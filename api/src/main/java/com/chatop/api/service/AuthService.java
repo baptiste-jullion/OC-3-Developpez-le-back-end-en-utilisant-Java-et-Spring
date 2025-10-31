@@ -72,13 +72,7 @@ public class AuthService {
         if (!(principal instanceof User user)) {
             return null;
         }
-        UserDto dto = new UserDto();
-        dto.setId(user.getId());
-        dto.setEmail(user.getEmail());
-        dto.setName(user.getName());
-        dto.setCreatedAt(user.getCreatedAt());
-        dto.setUpdatedAt(user.getUpdatedAt());
-        return dto;
+        return new UserDto(user);
     }
 
     private String createToken(User user) {
