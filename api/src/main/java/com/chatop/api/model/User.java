@@ -12,6 +12,7 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "USERS")
+@ToString(exclude = {"rentals", "messages", "password"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +25,6 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @ToString.Exclude
     @Column(name = "password")
     private String password;
 
