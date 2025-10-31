@@ -4,6 +4,7 @@ import com.chatop.api.dto.AuthSuccessDto;
 import com.chatop.api.dto.LoginRequestDto;
 import com.chatop.api.dto.RegisterRequestDto;
 import com.chatop.api.dto.UserDto;
+import com.chatop.api.mapper.UserMapper;
 import com.chatop.api.model.User;
 import com.chatop.api.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
@@ -45,10 +46,7 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
         }
 
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setName(request.getName());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        User user = UserMapper.toUser(request, passwordEncoder);
         User saved = userRepository.save(user);
 
         String token = createToken(saved);
