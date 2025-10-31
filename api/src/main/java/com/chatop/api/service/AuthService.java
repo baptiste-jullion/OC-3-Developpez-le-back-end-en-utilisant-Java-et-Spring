@@ -3,15 +3,15 @@ package com.chatop.api.service;
 import com.chatop.api.dto.AuthSuccessDto;
 import com.chatop.api.dto.LoginRequestDto;
 import com.chatop.api.dto.RegisterRequestDto;
+import com.chatop.api.dto.UserDto;
 import com.chatop.api.model.User;
 import com.chatop.api.repository.UserRepository;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -67,24 +67,18 @@ public class AuthService {
         return new AuthSuccessDto(token);
     }
 
-    public User me(String authorizationHeader) {
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+    public UserDto me() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (!(principal instanceof User user)) {
             return null;
         }
-        String token = authorizationHeader.substring(7);
-        try {
-            Claims claims = Jwts.parserBuilder()
-                    .setSigningKey(jwtKey)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody();
-            String subject = claims.getSubject();
-            if (subject == null) return null;
-            Long userId = Long.parseLong(subject);
-            return userRepository.findById(userId).orElse(null);
-        } catch (JwtException | IllegalArgumentException e) {
-            return null;
-        }
+        UserDto dto = new UserDto();
+        dto.setId(user.getId());
+        dto.setEmail(user.getEmail());
+        dto.setName(user.getName());
+        dto.setCreatedAt(user.getCreatedAt());
+        dto.setUpdatedAt(user.getUpdatedAt());
+        return dto;
     }
 
     private String createToken(User user) {
