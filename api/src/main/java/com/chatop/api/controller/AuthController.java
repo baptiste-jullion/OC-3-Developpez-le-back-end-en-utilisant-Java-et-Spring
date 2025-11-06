@@ -8,6 +8,8 @@ import com.chatop.api.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -24,15 +26,16 @@ public class AuthController {
         return ResponseEntity.ok(result);
     }
 
-    @PostMapping("/email")
+    @PostMapping("/login")
     public ResponseEntity<AuthSuccessDto> login(@RequestBody LoginRequestDto request) {
         AuthSuccessDto result = authService.login(request);
         return ResponseEntity.ok(result);
     }
 
     @GetMapping("/me")
-    public ResponseEntity<UserDto> me() {
-        UserDto userDto = authService.me();
+    public ResponseEntity<UserDto> me(Principal principal) {
+        String email = principal != null ? principal.getName() : null;
+        UserDto userDto = authService.me(email);
         if (userDto == null) {
             return ResponseEntity.status(401).build();
         }

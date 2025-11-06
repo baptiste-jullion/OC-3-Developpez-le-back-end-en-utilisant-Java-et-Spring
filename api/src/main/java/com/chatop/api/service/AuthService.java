@@ -12,7 +12,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -65,13 +64,14 @@ public class AuthService {
         return new AuthSuccessDto(token);
     }
 
-    public UserDto me() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (!(principal instanceof User user)) {
+    public UserDto me(String email) {
+        if (email == null) {
             return null;
         }
-        return new UserDto(user);
+        Optional<User> userOpt = userRepository.findByEmail(email);
+        return userOpt.map(UserDto::new).orElse(null);
     }
+
 
     private String createToken(User user) {
         Date now = new Date();
