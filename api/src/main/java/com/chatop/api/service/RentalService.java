@@ -9,6 +9,8 @@ import com.chatop.api.model.User;
 import com.chatop.api.repository.RentalRepository;
 import com.chatop.api.repository.UserRepository;
 import com.chatop.api.mapper.RentalMapper;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,9 +23,14 @@ public class RentalService {
     private final RentalRepository rentalRepository;
     private final UserRepository userRepository;
 
-    public RentalService(RentalRepository rentalRepository, UserRepository userRepository) {
+
+    private final FileStorageService fileStorageService;
+
+    @Autowired
+    public RentalService(RentalRepository rentalRepository, UserRepository userRepository, FileStorageService fileStorageService) {
         this.rentalRepository = rentalRepository;
         this.userRepository = userRepository;
+        this.fileStorageService = fileStorageService;
     }
 
 
@@ -42,18 +49,34 @@ public class RentalService {
 
 
     @Transactional
-    public RentalDto createRental(RentalCreateRequestDto dto) {
-        User owner = userRepository.findById(dto.getOwnerId()).orElseThrow();
-        Rental rental = RentalMapper.fromCreateDto(dto, owner);
+    public RentalDto createRental(RentalCreateRequestDto dto, User owner) {
+        if (owner == null) {
+            throw new IllegalArgumentException("owner must not be null");
+        }
+        String pictureUrl = null;
+        MultipartFile pictureFile = dto.getPicture();
+        if (pictureFile != null && !pictureFile.isEmpty()) {
+            pictureUrl = fileStorageService.storeFile(pictureFile);
+        }
+        Rental rental = RentalMapper.fromCreateDto(dto, owner, pictureUrl);
         Rental saved = rentalRepository.save(rental);
         return RentalMapper.toDto(saved);
+    }
+
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElse(null);
     }
 
 
     @Transactional
     public RentalDto updateRental(Long id, RentalUpdateRequestDto dto) {
         Rental rental = rentalRepository.findById(id).orElseThrow();
-        RentalMapper.updateRentalFromDto(rental, dto);
+        String pictureUrl = null;
+        MultipartFile pictureFile = dto.getPicture();
+        if (pictureFile != null && !pictureFile.isEmpty()) {
+            pictureUrl = fileStorageService.storeFile(pictureFile);
+        }
+        RentalMapper.updateRentalFromDto(rental, dto, pictureUrl);
         Rental saved = rentalRepository.save(rental);
         return RentalMapper.toDto(saved);
     }
