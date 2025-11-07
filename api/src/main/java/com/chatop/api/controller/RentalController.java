@@ -4,9 +4,12 @@ import com.chatop.api.dto.rentals.RentalCreateRequestDto;
 import com.chatop.api.dto.rentals.RentalDto;
 import com.chatop.api.dto.rentals.RentalListDto;
 import com.chatop.api.dto.rentals.RentalUpdateRequestDto;
+import com.chatop.api.model.User;
 import com.chatop.api.service.RentalService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/api/rentals")
@@ -27,13 +30,23 @@ public class RentalController {
         return ResponseEntity.ok(rentalService.getRentalById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<RentalDto> createRental(@RequestBody RentalCreateRequestDto dto) {
-        return ResponseEntity.ok(rentalService.createRental(dto));
+
+    @PostMapping(consumes = {"multipart/form-data"})
+    public ResponseEntity<RentalDto> createRental(@ModelAttribute RentalCreateRequestDto dto, Principal principal) {
+        String email = principal != null ? principal.getName() : null;
+        if (email == null) {
+            return ResponseEntity.status(401).build();
+        }
+        User user = rentalService.getUserByEmail(email);
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
+        return ResponseEntity.ok(rentalService.createRental(dto, user));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<RentalDto> updateRental(@PathVariable Long id, @RequestBody RentalUpdateRequestDto dto) {
+
+    @PutMapping(value = "/{id}", consumes = {"multipart/form-data"})
+    public ResponseEntity<RentalDto> updateRental(@PathVariable Long id, @ModelAttribute RentalUpdateRequestDto dto) {
         return ResponseEntity.ok(rentalService.updateRental(id, dto));
     }
 
