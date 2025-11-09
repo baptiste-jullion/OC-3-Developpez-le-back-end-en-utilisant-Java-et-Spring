@@ -1,14 +1,15 @@
-package com.chatop.api.dto.rentals;
+package com.chatop.api.dto.rental.response;
 
-import com.chatop.api.model.Rental;
+import com.chatop.api.dto.message.response.MessageReadResponseDto;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
-public class RentalDto {
+public class RentalReadResponseDto {
     private Long id;
     private String name;
     private Double surface;
@@ -18,4 +19,5 @@ public class RentalDto {
     private Long ownerId;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private List<MessageReadResponseDto> messages;
 }
