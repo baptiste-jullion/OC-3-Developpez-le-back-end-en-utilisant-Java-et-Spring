@@ -1,4 +1,4 @@
-package com.chatop.api.model;
+package com.chatop.api.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -7,28 +7,37 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
 @Entity
-@Table(name = "MESSAGES")
-public class Message {
+@Table(name = "RENTALS")
+public class Rental {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "rental_id")
-    private Rental rental;
+    @Column(name = "name")
+    private String name;
 
-    @Column(name = "message", length = 2000)
-    private String message;
+    @Column(name = "surface")
+    private Double surface;
+
+    @Column(name = "price")
+    private Double price;
+
+    @Column(name = "picture")
+    private String picture;
+
+    @Column(name = "description", length = 2000)
+    private String description;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "owner_id")
+    private User owner;
 
     @CreationTimestamp
     @Column(name = "created_at")
@@ -38,4 +47,6 @@ public class Message {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @OneToMany(mappedBy = "rental")
+    private List<Message> messages;
 }
