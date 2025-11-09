@@ -31,7 +31,6 @@ public class FileController {
         }
         FileSystemResource resource = new FileSystemResource(file);
         String contentType = MediaType.APPLICATION_OCTET_STREAM_VALUE;
-        // Optionally, try to guess content type
         try {
             String probe = java.nio.file.Files.probeContentType(file.toPath());
             if (probe != null) contentType = probe;
