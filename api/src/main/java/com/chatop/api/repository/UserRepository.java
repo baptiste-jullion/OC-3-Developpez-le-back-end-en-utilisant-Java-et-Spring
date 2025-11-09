@@ -1,6 +1,6 @@
 package com.chatop.api.repository;
 
-import com.chatop.api.model.User;
+import com.chatop.api.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
