@@ -1,6 +1,6 @@
 package com.chatop.api.config;
 
-import com.chatop.api.model.User;
+import com.chatop.api.entity.User;
 import com.chatop.api.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
