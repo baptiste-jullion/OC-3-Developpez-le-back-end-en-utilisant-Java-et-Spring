@@ -17,7 +17,6 @@ public class FileStorageService {
     @Value("${app.upload.url:/uploads/}")
     private String uploadUrl;
 
-    // Base URL for serving files, e.g. http://localhost:3001
     @Value("${app.base.url:http://localhost:3001}")
     private String baseUrl;
 

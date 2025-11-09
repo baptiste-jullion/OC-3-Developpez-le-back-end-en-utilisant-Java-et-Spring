@@ -1,15 +1,15 @@
 package com.chatop.api.service;
 
-import com.chatop.api.dto.AuthSuccessDto;
-import com.chatop.api.dto.LoginRequestDto;
-import com.chatop.api.dto.RegisterRequestDto;
-import com.chatop.api.dto.UserDto;
+import com.chatop.api.dto.auth.request.AuthLoginRequestDto;
+import com.chatop.api.dto.auth.request.AuthRegisterRequestDto;
+import com.chatop.api.dto.auth.response.AuthJwtResponseDto;
+import com.chatop.api.dto.user.response.UserReadResponseDto;
+import com.chatop.api.entity.User;
 import com.chatop.api.mapper.UserMapper;
-import com.chatop.api.model.User;
 import com.chatop.api.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,43 +17,37 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.crypto.SecretKey;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class AuthService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
     private final SecretKey jwtKey;
-    private final long jwtExpirationMs;
 
-    public AuthService(UserRepository userRepository,
-                       PasswordEncoder passwordEncoder,
-                       @Value("${jwt.secret}") String jwtSecret,
-                       @Value("${jwt.expiration-ms}") long jwtExpirationMs) {
-        this.userRepository = userRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtExpirationMs = jwtExpirationMs;
-        this.jwtKey = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-    }
+    @Value("${jwt.expiration.ms}")
+    private long jwtExpirationMs;
 
-    public AuthSuccessDto register(RegisterRequestDto request) {
+
+    public AuthJwtResponseDto register(AuthRegisterRequestDto request) {
         Optional<User> existing = userRepository.findByEmail(request.getEmail());
         if (existing.isPresent()) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
         }
 
-        User user = UserMapper.toUser(request, passwordEncoder);
+        User user = userMapper.toEntity(request);
         User saved = userRepository.save(user);
 
         String token = createToken(saved);
-        return new AuthSuccessDto(token);
+        return new AuthJwtResponseDto(token);
     }
 
-    public AuthSuccessDto login(LoginRequestDto request) {
-        User user = userRepository.findByEmail(request.getLogin())
+    public AuthJwtResponseDto login(AuthLoginRequestDto request) {
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -61,15 +55,17 @@ public class AuthService {
         }
 
         String token = createToken(user);
-        return new AuthSuccessDto(token);
+        return new AuthJwtResponseDto(token);
     }
 
-    public UserDto me(String email) {
-        if (email == null) {
-            return null;
+    public UserReadResponseDto me(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+
+        if (user.isEmpty()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found");
         }
-        Optional<User> userOpt = userRepository.findByEmail(email);
-        return userOpt.map(UserDto::new).orElse(null);
+
+        return userMapper.toReadDto(user.get());
     }
 
 
