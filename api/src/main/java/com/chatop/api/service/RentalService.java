@@ -11,6 +11,7 @@ import com.chatop.api.mapper.RentalMapper;
 import com.chatop.api.repository.RentalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -50,6 +51,7 @@ public class RentalService {
         return new ApiResponseDto<>("Rental created !", rentalDto);
     }
 
+    @Transactional
     public ApiResponseDto<RentalReadResponseDto> update(Long id, RentalUpdateRequestDto dto) {
         Rental existingRental = rentalRepository.findById(id).orElseThrow();
 
