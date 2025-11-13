@@ -11,7 +11,6 @@ import com.chatop.api.mapper.RentalMapper;
 import com.chatop.api.repository.RentalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -24,10 +23,11 @@ public class RentalService {
     private final RentalMapper rentalMapper;
 
     public RentalListResponseDto list() {
-        List<RentalReadResponseDto> rentals = rentalRepository.findAll().stream()
+        List<Rental> rentals = rentalRepository.findAll();
+        List<RentalReadResponseDto> rentalDtos = rentals.stream()
                 .map(rentalMapper::toReadDto)
                 .toList();
-        return new RentalListResponseDto(rentals);
+        return new RentalListResponseDto(rentalDtos);
     }
 
 
@@ -36,7 +36,6 @@ public class RentalService {
         return rentalMapper.toReadDto(rental);
     }
 
-    @Transactional
     public ApiResponseDto<RentalReadResponseDto> create(RentalCreateRequestDto dto, User owner) {
         if (owner == null) {
             throw new IllegalArgumentException("owner must not be null");
