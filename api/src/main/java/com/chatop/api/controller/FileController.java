@@ -1,6 +1,8 @@
 package com.chatop.api.controller;
 
 import com.chatop.api.service.FileStorageService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +17,7 @@ import java.io.File;
 
 @RestController
 @RequestMapping("/api/files")
+@Tag(name = "File Management")
 public class FileController {
 
     private final FileStorageService fileStorageService;
@@ -24,6 +27,7 @@ public class FileController {
     }
 
     @GetMapping("/{filename:.+}")
+    @Operation(summary = "Get public url by filename")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         File file = fileStorageService.getFile(filename);
         if (!file.exists() || !file.isFile()) {
