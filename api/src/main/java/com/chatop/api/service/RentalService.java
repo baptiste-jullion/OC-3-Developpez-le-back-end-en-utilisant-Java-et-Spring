@@ -9,6 +9,7 @@ import com.chatop.api.entity.Rental;
 import com.chatop.api.entity.User;
 import com.chatop.api.mapper.RentalMapper;
 import com.chatop.api.repository.RentalRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +34,7 @@ public class RentalService {
 
 
     public RentalReadResponseDto retrieve(Long id) {
-        Rental rental = rentalRepository.findById(id).orElseThrow();
+        Rental rental = rentalRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Rental not found"));
         return rentalMapper.toReadDto(rental);
     }
 
