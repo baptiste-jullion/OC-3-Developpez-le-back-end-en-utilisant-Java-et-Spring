@@ -12,12 +12,12 @@ import java.util.Optional;
 @Repository
 public interface RentalRepository extends JpaRepository<Rental, Long> {
     @Override
-    @EntityGraph(attributePaths = "messages")
+    @EntityGraph(attributePaths = {"messages", "owner", "messages.user"})
     @NonNull
     List<Rental> findAll();
 
     @Override
-    @EntityGraph(attributePaths = "messages")
+    @EntityGraph(attributePaths = {"messages", "owner", "messages.user"})
     @NonNull
     Optional<Rental> findById(@NonNull Long id);
 }

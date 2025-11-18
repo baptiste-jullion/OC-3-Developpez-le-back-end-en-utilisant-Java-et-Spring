@@ -13,6 +13,7 @@ import org.mapstruct.MappingTarget;
 @Mapper(componentModel = "spring")
 public interface RentalMapper {
     @Mapping(target = "ownerId", source = "rental.owner.id")
+    @Mapping(target = "picture", expression = "java(rental.getPicture() != null ? \"/api/files/\" + rental.getPicture() : null)")
     RentalReadResponseDto toReadDto(Rental rental);
 
     @Mapping(target = "id", ignore = true)
