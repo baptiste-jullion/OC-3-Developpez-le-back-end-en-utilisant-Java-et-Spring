@@ -50,6 +50,10 @@ Swagger UI est disponible à l'adresse :
 ```
 http://localhost:3001/swagger-ui.html
 ```
+La documentation avec Scalar UI :
+```
+http://localhost:3001/docs
+```
 
 ## Principaux Endpoints
 
@@ -85,4 +89,17 @@ spring.datasource.username=chatop_db
 spring.datasource.password=chatop_db
 jwt.secret=1904e2f377271895eb994155723f9fe015e2352e4bd35bda7a3d591227a1bb35d621fd0ee3ffb74c7cd024590f24b98211f19c3a8212859184680fe4347ee030
 jwt.expiration.ms=86400000
+```
+## Création de la base de données MySQL
+
+Avant de lancer l'application, créez la base de données et l'utilisateur MySQL avec les commandes suivantes :
+
+```sql
+-- Crée la base de données
+CREATE DATABASE chatop_db;
+
+-- Crée un utilisateur et lui donne les droits sur la base de données
+CREATE USER 'chatop_db'@'localhost' IDENTIFIED BY 'chatop_db';
+GRANT ALL PRIVILEGES ON chatop_db.* TO 'chatop_db'@'localhost';
+FLUSH PRIVILEGES;
 ```
