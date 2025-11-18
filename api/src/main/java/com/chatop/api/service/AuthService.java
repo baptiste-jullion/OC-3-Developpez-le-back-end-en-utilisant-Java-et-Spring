@@ -12,6 +12,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -39,6 +40,9 @@ public class AuthService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Email already in use");
         }
 
+        String hashedPassword = hashPassword(request.getPassword());
+        request.setPassword(hashedPassword);
+
         User user = userMapper.toEntity(request);
         User saved = userRepository.save(user);
 
@@ -47,7 +51,7 @@ public class AuthService {
     }
 
     public AuthJwtResponseDto login(AuthLoginRequestDto request) {
-        User user = userRepository.findByEmail(request.getEmail())
+        User user = userRepository.findByEmail(request.getLogin())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials"));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
@@ -78,5 +82,10 @@ public class AuthService {
                 .setExpiration(expiry)
                 .signWith(jwtKey, SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private String hashPassword(String password) {
+        PasswordEncoder encoder = new BCryptPasswordEncoder();
+        return encoder.encode(password);
     }
 }
