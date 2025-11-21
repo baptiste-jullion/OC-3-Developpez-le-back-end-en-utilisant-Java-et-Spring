@@ -29,30 +29,42 @@ Chatop API est un backend Spring Boot pour une plateforme de location. Il fourni
 - Java 17 ou supérieur
 - Maven
 
+### Configuration par variables d'environnement (recommandé)
+Pour la sécurité et la portabilité, configurez les paramètres sensibles (base de données, JWT, port) via des variables d'environnement.
+
+Exemple de variables à définir avant de lancer l'application :
+```bash
+export DB_URL=<votre_url_db>
+export DB_USERNAME=<votre_utilisateur_db>
+export DB_PASSWORD=<votre_mot_de_passe_db>
+export JWT_SECRET=<votre_secret_jwt>
+export JWT_EXPIRATION_MS=<expiration_jwt_en_ms>
+export SERVER_PORT=<port_du_serveur>
+```
+
 ### Installation
 1. Clonez le dépôt :
    ```bash
    git clone https://github.com/baptiste-jullion/OC-3-Developpez-le-back-end-en-utilisant-Java-et-Spring.git
    cd api
    ```
-2. Configurez votre base de données dans `src/main/resources/application.properties`.
-3. (Optionnel) Définissez les variables d'environnement pour le secret JWT et le dossier d'upload.
+2. Configurez vos variables d'environnement comme indiqué ci-dessus (recommandé) ou modifiez les fichiers de configuration dans `src/main/resources` (non recommandé pour les secrets).
 
 ### Build & Run
 ```bash
 mvn clean install
 mvn spring-boot:run
 ```
-L'API sera disponible par défaut sur `http://localhost:3001`.
+L'API sera disponible par défaut sur `http://localhost:${SERVER_PORT}`.
 
 ### Documentation API
 Swagger UI est disponible à l'adresse :
 ```
-http://localhost:3001/swagger-ui.html
+http://localhost:${SERVER_PORT}/swagger-ui.html
 ```
 La documentation avec Scalar UI :
 ```
-http://localhost:3001/docs
+http://localhost:${SERVER_PORT}/docs
 ```
 
 ## Principaux Endpoints
@@ -78,18 +90,6 @@ http://localhost:3001/docs
 ### Fichiers
 - `GET /api/files/{filename}` — Télécharger une image / y accéder via URL
 
-## Configuration
-
-Modifiez `src/main/resources/application.properties` pour la base de données, le JWT et les paramètres d'upload.
-
-Exemple :
-```
-spring.datasource.url=jdbc:mysql://localhost:3306/chatop_db
-spring.datasource.username=chatop_db
-spring.datasource.password=chatop_db
-jwt.secret=1904e2f377271895eb994155723f9fe015e2352e4bd35bda7a3d591227a1bb35d621fd0ee3ffb74c7cd024590f24b98211f19c3a8212859184680fe4347ee030
-jwt.expiration.ms=86400000
-```
 ## Création de la base de données MySQL
 
 Avant de lancer l'application, créez la base de données et l'utilisateur MySQL avec les commandes suivantes :
